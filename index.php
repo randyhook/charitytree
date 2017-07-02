@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-define( 'SITE_ROOT_URL', 'http://localhost/charitycomp/' );
+define( 'SITE_ROOT_URL', 'http://localhost/charitytree/' );
 
 Flight::route('/', function() {
 	Flight::render('home.php');

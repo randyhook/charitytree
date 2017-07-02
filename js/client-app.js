@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+	$('select').material_select();
+
 	$('.app-sections-menu .collection-item').click(function() {
 
 		$('.app-section').removeClass('active');
