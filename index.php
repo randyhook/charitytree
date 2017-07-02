@@ -1,8 +1,17 @@
 <?php
+session_start();
+define( 'SITE_ROOT_URL', 'http://localhost/charitytree/' );
 
 require 'vendor/autoload.php';
+Flight::path( 'classes' );
+Flight::register( 'Data', 'Data' );
+Flight::register( 'Result', 'Result' );
 
-define( 'SITE_ROOT_URL', 'http://localhost/charitytree/' );
+/***********************
+ *
+ * Routes
+ *
+ */
 
 Flight::route('/', function() {
 	Flight::render('home.php');
@@ -28,6 +37,16 @@ Flight::route('/client-dashboard', function() {
 			'js/client-dashboard.js'
 		)
 	));
+});
+
+Flight::route('/install', function() {
+	Flight::register( 'Admin', 'Admin' );
+	$installCheckResult = Admin::installCheck();
+
+	Flight::render('install', array(
+		'checkResult' => $installCheckResult
+	), 'main_content');
+	Flight::render('layout');
 });
 
 Flight::route('/login', function() {
