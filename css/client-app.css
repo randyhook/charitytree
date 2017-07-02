@@ -1,0 +1,16 @@
+.app-section {
+	display: none;
+}
+
+.app-section.active {
+	display: block;
+}
+
+.church-name-container {
+	display: none;
+	margin-top: 2rem;
+}
+
+.new-family-member {
+	display: none;
+}
