@@ -44,7 +44,11 @@ Flight::route('/install', function() {
 	$installCheckResult = Admin::installCheck();
 
 	Flight::render('install', array(
-		'checkResult' => $installCheckResult
+		'checkResult' => $installCheckResult,
+		'includeJs' => array(
+			'js/form-functions.js',
+			'js/install.js'
+		)
 	), 'main_content');
 	Flight::render('layout');
 });
@@ -67,6 +71,11 @@ Flight::route('/manager-dashboard', function() {
 			'js/manager-dashboard.js'
 		)
 	));
+});
+
+Flight::route('/ajax/start-install', function() {
+	Flight::register( 'Admin', 'Admin' );
+	echo json_encode( Admin::install( $_POST ) );
 });
 
 Flight::start();

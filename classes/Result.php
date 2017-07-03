@@ -52,7 +52,12 @@ class Result {
 
 	public function isSuccess() {
 
-		return $this->_successFail || count( $this->_successData ) > 0;
+		if ( $this->_successFail || !empty( $this->_successData ) ) {
+			return true;
+		}
+		else {
+			return false;
+		}
 
 	}
 

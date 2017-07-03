@@ -2,9 +2,24 @@
 
 class Admin {
 
+	public static function install( $data ) {
+
+		$returnResult = Flight::Result(false);
+
+		Flight::register( 'User', 'User' );
+		$userResult = User::createUser( $data, true );
+
+		if ( !$userResult->isSuccess() ) {
+			return $returnResult;
+		}
+
+		return $returnResult;
+
+	}
+
 	public static function installCheck() {
 
-		$returnResult = Flight::Result();
+		$returnResult = Flight::Result(false);
 
 		Flight::register( 'User', 'User' );
 		$totalUsersResult = User::getTotalUsers();
