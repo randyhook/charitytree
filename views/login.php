@@ -9,4 +9,7 @@
 	<input id="password" type="password" placeholder="Password">
 </div>
 
+<ul class="messages">
+</ul>
+
 <a id="log-in" class="waves-effect waves-light btn">Log in</a>

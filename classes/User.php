@@ -105,6 +105,62 @@ class User {
 
 	} // getTotalUsers()
 
+	/**
+	 * Log in a user
+	 *
+	 * @param array $postData [ 'email', 'password' ]
+	 *
+	 * @return Result
+	 */
+	public static function login( $postData ) {
+
+		$returnResult = Flight::Result(false);
+
+		session_destroy();
+
+		// verify incoming data format
+		if ( !is_array( $postData ) ) {
+			$returnResult->addError( 'Data to log in user is not in correct format.' );
+			return $returnResult;
+		}
+
+		foreach ( array( 'email', 'password' ) as $key ) {
+			if ( !array_key_exists( $key, $postData ) ) {
+				$returnResult->addError( 'Data to log in user is not in correct format.' );
+				return $returnResult;
+			}
+		}
+
+		// attempt to verify the user record
+		$data = Flight::Data(false);
+		$credsResult = $data->getUserByCreds( $postData[ 'email' ], $postData[ 'password' ] );
+
+		// if successful
+		if ( $credsResult->isSuccess() ) {
+
+			// initialize session data
+			$sData = $credsResult->getSuccessData()[0];
+			$_SESSION[ User::SESSION_LOGGED_IN_USER_ID ] = $sData[ 'id' ];
+			$_SESSION[ User::SESSION_LOGGED_IN_USER_EMAIL ] = $sData[ 'email' ];
+			$_SESSION[ User::SESSION_LOGGED_IN_USER_ROLE ] = $sData[ 'role' ];
+
+		}
+
+		$returnResult = $credsResult;
+		return $returnResult;
+
+	} // login()
+
+	public static function logout() {
+
+		$returnResult = Flight::Result(false);
+
+		session_destroy();
+
+		return $returnResult;
+
+	} // logout()
+
 	public static function roleExists( $role ) {
 
 		$returnResult = Flight::Result(false);

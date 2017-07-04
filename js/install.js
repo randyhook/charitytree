@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 
 function startInstall() {
-	clearMessages();
+	clearFormMessages();
 
 	if (!verifyInstall()) {
 		return;
@@ -19,8 +19,17 @@ function startInstall() {
 			password: $('#superuser-password').val()
 		},
 		success: function(result) {
+			result = JSON.parse(result);
+
+			if (result.status == 'success') {
+				window.location = 'login';
+			}
+			else {
+				addFormMessage('There was an error while installing the application.');
+			}
 		},
 		error: function(result) {
+			addFormMessage('There was an error while installing the application.');
 		}
 	});
 	
@@ -31,12 +40,12 @@ function verifyInstall() {
 	var isVerified = true;
 
 	if ($.trim($('#superuser-email').val()).length == 0) {
-		addMessage('Superuser email is required.');
+		addFormMessage('Superuser email is required.');
 		isVerified = false;
 	}
 
 	if ($.trim($('#superuser-password').val()).length == 0) {
-		addMessage('Superuser password is required.');
+		addFormMessage('Superuser password is required.');
 		isVerified = false;
 	}
 

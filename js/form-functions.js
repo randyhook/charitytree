@@ -1,7 +1,7 @@
-function addMessage(msg) {
+function addFormMessage(msg) {
 	$('.messages').append('<li>' + msg + '</li>');
 }
 
-function clearMessages() {
+function clearFormMessages() {
 	$('.messages').html('');
 }

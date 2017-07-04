@@ -55,7 +55,7 @@ class Data {
 
 		return $this->getUserByEmail( $e );
 
-	}
+	} // createUser()
 
 	public function getTotalRecords( $tableName, $criteria = array() ) {
 
@@ -86,16 +86,22 @@ class Data {
 		
 		return $returnResult;
 
-	}
+	} // getTotalRecords()
 
-	public function getUserByEmail( $email ) {
+	public function getUserByCreds( $email, $password ) {
 
 		$returnResult = Flight::Result(false);
 
 		$e = filter_var( $email, FILTER_SANITIZE_EMAIL );
 		if ( !$e ) {
 			$returnResult->addError( 'Email did not sanitize.' );
-			return $result;
+			return $returnResult;
+		}
+
+		$p = filter_var( $password, FILTER_SANITIZE_STRIPPED );
+		if ( !$p ) {
+			$returnResult->addError( 'Password did not sanitize.' );
+			return $returnResult;
 		}
 
 		$statement = $this->_pdo->prepare( "SELECT * FROM users WHERE email = :email" );
@@ -106,21 +112,53 @@ class Data {
 			return $returnResult;
 		}
 
-		$returnResult->setSuccessFail( true );
+		$fetchResult = $statement->fetch( PDO::FETCH_ASSOC );
 
-		if ( $statement->rowCount() > 0 ) {
-
-			$fetchResult = $statement->fetch( PDO::FETCH_ASSOC );
-				
-			if ( !$fetchResult ) {
-				$returnResult->addDbError( $statement );
-				return $returnResult;
-			}
-
-			$returnResult->addSuccessData( $fetchResult );
-			
+		if ( !$fetchResult ) {
+			$returnResult->addDbError( $statement );
+			return $returnResult;
 		}
 		
+		if ( !password_verify( $p, $fetchResult[ 'password' ] ) ) {
+			$returnResult->addError( 'Credentials did not match.' );
+			return $returnResult;
+		}
+
+		$returnResult->addSuccessData( $fetchResult );
+		$returnResult->setSuccessFail( true );
+		
+		return $returnResult;
+
+	} // getUserByCreds()
+
+	public function getUserByEmail( $email ) {
+
+		$returnResult = Flight::Result(false);
+
+		$e = filter_var( $email, FILTER_SANITIZE_EMAIL );
+		if ( !$e ) {
+			$returnResult->addError( 'Email did not sanitize.' );
+			return $returnResult;
+		}
+
+		$statement = $this->_pdo->prepare( "SELECT * FROM users WHERE email = :email" );
+		$exResult = $statement->execute( [ 'email' => $e ] );
+
+		if ( !$exResult ) {
+			$returnResult->addDbError( $statement );
+			return $returnResult;
+		}
+
+		$fetchResult = $statement->fetch( PDO::FETCH_ASSOC );
+			
+		if ( !$fetchResult ) {
+			$returnResult->addDbError( $statement );
+			return $returnResult;
+		}
+
+		$returnResult->addSuccessData( $fetchResult );
+		$returnResult->setSuccessFail( true );
+			
 		return $returnResult;
 
 	} // getUserByEmail()

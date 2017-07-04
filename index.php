@@ -57,9 +57,16 @@ Flight::route('/login', function() {
 	Flight::render('login', null, 'main_content');
 	Flight::render('layout', array(
 		'includeJs' => array(
+			'js/form-functions.js',
 			'js/login.js'
 		)
 	));
+});
+
+Flight::route('/logout', function() {
+	Flight::register( 'User', 'User' );
+	$logoutResult = User::logout();
+	Flight::redirect('/login');
 });
 
 Flight::route('/manager-dashboard', function() {
@@ -75,7 +82,26 @@ Flight::route('/manager-dashboard', function() {
 
 Flight::route('/ajax/start-install', function() {
 	Flight::register( 'Admin', 'Admin' );
-	echo json_encode( Admin::install( $_POST ) );
+	$installResult = Admin::install( $_POST );
+
+	if ( $installResult->isSuccess() ) {
+		echo json_encode( array( 'status' => 'success' ) );
+	}
+	else {
+		echo json_encode( array( 'status' => 'fail' ) );
+	}
+});
+
+Flight::route('/ajax/user/submit-login', function() {
+	Flight::register( 'User', 'User' );
+	$loginResult = User::login( $_POST );
+
+	if ( $loginResult->isSuccess() ) {
+		echo json_encode( array( 'status' => 'success' ) );
+	}
+	else {
+		echo json_encode( array( 'status' => 'fail' ) );
+	}
 });
 
 Flight::start();

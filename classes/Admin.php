@@ -13,6 +13,8 @@ class Admin {
 			return $returnResult;
 		}
 
+		$returnResult->setSuccessFail(true);
+
 		return $returnResult;
 
 	}
